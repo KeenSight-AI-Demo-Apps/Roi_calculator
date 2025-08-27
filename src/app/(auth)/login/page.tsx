@@ -1,15 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AiOutlineGoogle } from 'react-icons/ai';
-import { useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 import { apiResponse } from "@/types/apiResponse";
-import axios from "axios";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import Link from "next/link";
@@ -18,19 +15,17 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { loginInSchema } from "@/schemas/login.Schema";
 
-function page() {
+export default function Loginpage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
   
   const [isFormsubmitting, setisformsubmitting] = useState(false);
-  const [isFormsubmitted, setisformsubmitted] = useState(false);
 
   const form = useForm<z.infer<typeof loginInSchema>>({
     resolver: zodResolver(loginInSchema),
@@ -49,18 +44,29 @@ function page() {
     try {
       setisformsubmitting(true);
       const response = await signIn("credentials",{redirect:false,identifier:data.identifier,password:data.password});
-      if (response) {
-        setisformsubmitting(false);
-        setisformsubmitted(true);
-        toast("Login Successfull", {
-          description: "User Logged In Successfully",
-        });
-        router.replace("/verify");
+      console.log(response)
+      if (response?.status) {
+        if(response.status>200){
+          console.log("response",response)
+          setisformsubmitting(false);
+            toast("Login Error", {
+              description: response.error
+            });
+        }
+          else{
+            setisformsubmitting(false);
+            toast("Login Successfull", {
+              description: "User logged in successfully",
+            });
+            router.replace(`/home`);
+          }
+
+        
       }
     } catch (error) {
       console.log("something went wrong while logging in", error);
       const axiosError=error as AxiosError<apiResponse>
-      let errorMessage=axiosError.response?.data.message
+      const errorMessage=axiosError.response?.data.message
       toast("Error",{richColors:true,description:errorMessage})
       setisformsubmitting(false)
     }
@@ -83,6 +89,7 @@ function page() {
                 <FormItem>
                   <FormLabel className="font-bold mt-1">Email</FormLabel>
                   <Input {...field} />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -93,7 +100,8 @@ function page() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-bold mt-3">Password</FormLabel>
-                  <Input {...field} />
+                  <Input {...field} type="password" />
+                  <FormMessage className="text-red-400" />
                 </FormItem>
               )}
             />
@@ -112,14 +120,14 @@ function page() {
                   "Login"
                 )}
               </Button>
-              <Button
+              {/* <Button
                 onClick={signingIn}
                 variant="outline"
                 className="w-full mt-[2rem]"
               >
                 <AiOutlineGoogle />
                 Login with Google
-              </Button>
+              </Button> */}
             </div>
           </form>
         </Form>
@@ -136,4 +144,3 @@ function page() {
   );
 }
 
-export default page;

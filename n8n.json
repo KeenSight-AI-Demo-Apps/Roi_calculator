@@ -1,5 +1,5 @@
 {
-  "name": "Final work",
+  "name": "My workflow",
   "nodes": [
     {
       "parameters": {
@@ -29,22 +29,22 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.2,
       "position": [
-        -2336,
-        -768
+        -3152,
+        -240
       ],
-      "id": "9766e4ab-5c6d-429d-8548-5c825813ae69",
+      "id": "6f003974-740d-4383-a2ec-bb27a0422397",
       "name": "On form submission",
-      "webhookId": "e201d055-fd2c-42fa-9f93-6e1d2ba7c616"
+      "webhookId": "WEBHOOK ID HERE"
     },
     {
       "parameters": {
-        "url": "=https://api.ebay.com/buy/browse/v1/item_summary/search?q=refurbished {{ $('On form submission').item.json['Device Model'] }} &limit=1",
+        "url": "=https://api.ebay.com/buy/browse/v1/item_summary/search?q=refurbished {{ $('Webhook').item.json.body.Device_Model }}  &limit=1",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "=Bearer {{ $json.accesstoken }}"
+              "value": "=Bearer {{ $json.accessToken }}"
             }
           ]
         },
@@ -53,23 +53,23 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1920,
-        -768
+        -2624,
+        80
       ],
-      "id": "9de808e6-51bd-4fb8-8767-870db128282b",
+      "id": "105dd8cb-91bc-4386-9c3d-e38e5b6942bc",
       "name": "HTTP Request"
     },
     {
       "parameters": {
-        "jsCode": "const clientId = 'YOUR-CLIENT-ID';\nconst clientSecret ='YOUR CLIENT SECRET';\nconst basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');\n\nconst options = {\n  method: 'POST',\n  url: 'https://api.ebay.com/identity/v1/oauth2/token',\n  headers: {\n    'Content-Type': 'application/x-www-form-urlencoded',\n    'Authorization': `Basic ${basicAuth}`,\n  },\n  body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope',\n  json: false // VERY IMPORTANT: body is raw string, so don't auto-parse it\n};\n\n  const staticGlobalData=$getWorkflowStaticData('global')\n  const expiry=staticGlobalData.expiry\nconst presenttime=new Date()\nconsole.log(staticGlobalData.tokenexpiry)\nif(staticGlobalData.tokenexpiry&&presenttime<new Date(staticGlobalData.tokenexpiry)){\n  return [{json:{accessToken:staticGlobalData.accesstoken,message:\"everythinggood\"}}]\n}\n\n\ntry {\n  const response = await this.helpers.httpRequest(options);\n \n\n\nconst accesstoken=response.access_token;\nconst tokenExpiry=response.expires_in;\nconst tokenRealExpiry=new Date(Date.now()+(tokenExpiry*1000))\nstaticGlobalData.accesstoken=accesstoken\nstaticGlobalData.tokenexpiry=tokenRealExpiry.toISOString() \n  return [{json:{accesstoken:response.access_token}}]; \n  \n} catch (error) {\n  \n  return [{erro:error}]\n}\n"
+        "jsCode": "const clientId = 'UmarFaro-ROIcalcu-PRD-00bd30580-17905c32';\nconst clientSecret ='PRD-0bd305807698-b1c8-49a0-a5e7-8d2c';\nconst basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');\n\nconst options = {\n  method: 'POST',\n  url: 'https://api.ebay.com/identity/v1/oauth2/token',\n  headers: {\n    'Content-Type': 'application/x-www-form-urlencoded',\n    'Authorization': `Basic ${basicAuth}`,\n  },\n  body: 'grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope',\n  json: false // VERY IMPORTANT: body is raw string, so don't auto-parse it\n};\n\n  const staticGlobalData=$getWorkflowStaticData('global')\n  const expiry=staticGlobalData.expiry\nconst presenttime=new Date()\nconsole.log(staticGlobalData.tokenexpiry)\nif(staticGlobalData.tokenexpiry&&presenttime<new Date(staticGlobalData.tokenexpiry)){\n  return [{json:{accessToken:staticGlobalData.accesstoken,message:\"everythinggood\"}}]\n}\n\n\ntry {\n  const response = await this.helpers.httpRequest(options);\n \n\n\nconst accesstoken=response.access_token;\nconst tokenExpiry=response.expires_in;\nconst tokenRealExpiry=new Date(Date.now()+(tokenExpiry*1000))\nstaticGlobalData.accesstoken=accesstoken\nstaticGlobalData.tokenexpiry=tokenRealExpiry.toISOString() \n  return [{json:{accesstoken:response.access_token}}]; \n  \n} catch (error) {\n  \n  return [{erro:error}]\n}\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2080,
-        -768
+        -2832,
+        80
       ],
-      "id": "c2a9e7d3-3ef8-41d0-924f-8a7a6fa9a759",
+      "id": "cbe52509-bfa2-42f5-b5c4-090371588422",
       "name": "Code1"
     },
     {
@@ -79,16 +79,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1728,
-        -768
+        -2448,
+        96
       ],
-      "id": "ae23b109-238f-419c-ace3-ef466cc77885",
+      "id": "6e98f8aa-824a-474f-9bcb-f9e2f24c2fb6",
       "name": "Code"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Device model:{{ $('On form submission').item.json['Device Model'] }}\nDefects:{{ $('On form submission').item.json.Defects }}\nTavilyRespone:{{ $json.answer }}",
+        "text": "=Device model:{{ $('Webhook').item.json.body.Device_Model }}\nDefects:{{ $('Webhook').item.json.body.Defects }}\nTavilyRespone:{{ $json.answer }}",
         "options": {
           "systemMessage": "You are a real-time search agent tasked with finding the current market price of used or broken electronic devices that have specific defects or damage conditions.\n\nYou are provided with a market search result that has already been retrieved using the Tavily tool, which searched across trusted marketplaces (such as eBay, Swappa, BackMarket, Amazon Renewed) to locate listings or sold prices for devices matching the condition and defects described.\n\n🔍 Objective:\nGiven:\n\nDevice model (e.g., \"iPhone 12 Pro\", \"Samsung Galaxy S21\")\n\nList of defects (e.g., \"cracked screen\", \"water damage\")\n\nYou must:\n\nRead the provided Tavily market response\n\nIdentify recent listings (preferably from the last 7–30 days) with similar defect conditions\n\nFocus on sold prices or active listings\n\nExtract the most common/average price in USD\n\n⚠️ Output Instruction:\nOnly return the estimated market price (in USD), nothing else.\n\nFormat:\n\nini\nprice = $[amount]\n\n✅ Example Output:\n\nini\nprice = $130\n\nDo not include:\n\nExplanations\n\nLinks\n\nConfidence scores\n\nSummaries\n\nSuggestions\n\nJust the price. Be concise and consistent.\n\n📦 Market data to analyze:\n\"{ {$json[\"tavily_response\"]} }\"\n"
         }
@@ -96,10 +96,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        -1200,
-        -768
+        -1968,
+        80
       ],
-      "id": "edd68096-8e73-4424-80d9-d83800da5b08",
+      "id": "766bcca1-296a-4f88-93f5-df5939ac10bd",
       "name": "AI Agent"
     },
     {
@@ -109,14 +109,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -960,
-        -448
+        -1776,
+        400
       ],
-      "id": "ef767fa0-bdc0-4eef-8ded-e79e7e3d3d1a",
+      "id": "8427765d-f451-402b-b3e4-5e546ec322fa",
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "izqDXyX5Y5UOw2q6",
+          "id": "PBnWjwdaGsi46dua",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
@@ -124,7 +124,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Device Model:{{ $('On form submission').item.json['Device Model'] }}\nDefects:{{ $('On form submission').item.json.Defects }}",
+        "text": "=Device Model:{{ $('Webhook').item.json.body.Device_Model }}\nDefects:{{ $('Webhook').item.json.body.Defects }}",
         "options": {
           "systemMessage": "For the device model, infer the specific replacement parts required to repair the following defects:\n\ncracked screen\n\nbattery draining fast\n\nwon’t charge\n\nblurry photos\n\nno sound during call\n\nReturn the result as a JSON array of objects in the following format:\n\n\n[\n  { \"part\": \"device model with part-name-1\" },\n  { \"part\": \"device model with part-name-2\" },\n  ...\n]\nDo not include duplicates or explanations. Only return the JSON."
         }
@@ -132,10 +132,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        -784,
-        -768
+        -1568,
+        96
       ],
-      "id": "ac4f1059-222e-4838-99e0-5edfa2d9e61a",
+      "id": "2f95f639-0a73-4e4e-b4b7-c39993b4b19a",
       "name": "AI Agent1"
     },
     {
@@ -145,10 +145,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -304,
-        -784
+        -1104,
+        96
       ],
-      "id": "1788c95b-6b6d-4727-a2d0-6168d94d54ea",
+      "id": "b701e254-9409-4195-8e24-1819e986cb8e",
       "name": "Code2"
     },
     {
@@ -158,10 +158,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -416,
-        -256
+        -720,
+        272
       ],
-      "id": "c954f219-87ea-4f41-9ef2-6d79b68a433d",
+      "id": "0a1ae10b-8d70-4971-b1a0-c6e1d99a20c1",
       "name": "Loop Over Items"
     },
     {
@@ -173,7 +173,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR-BEARER-TOKEN"
+              "value": "YOUR TAVILY API KEY"
             }
           ]
         },
@@ -185,10 +185,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        16,
-        -224
+        -400,
+        464
       ],
-      "id": "4fd7bfa9-b7ec-456a-a4a5-e6dd1b30400b",
+      "id": "bae7dd55-9ecd-49f9-8865-69bfb10706f7",
       "name": "HTTP Request2"
     },
     {
@@ -198,10 +198,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        -416
+        -416,
+        256
       ],
-      "id": "9f97bc1a-23cc-48d4-b30d-a20fa86027d8",
+      "id": "ec8f25fa-bd6b-41c8-9448-89d35b71e5da",
       "name": "Code3"
     },
     {
@@ -231,10 +231,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        272,
-        -224
+        32,
+        496
       ],
-      "id": "99e79928-8b73-4095-a413-7791c67dcc2e",
+      "id": "8f694b3a-a599-4f22-9cee-2fea72602194",
       "name": "If"
     },
     {
@@ -246,7 +246,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR-BEARER-TOKEN"
+              "value": "YOUR TAVILY API KEY"
             }
           ]
         },
@@ -258,16 +258,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        224,
-        192
+        -16,
+        912
       ],
-      "id": "f46e4e44-e1a1-4cf8-9a6e-b3197508129d",
+      "id": "33035d82-0ae9-4804-8ed3-6402ae031162",
       "name": "HTTP Request1"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=partscost:{{ $json.combinedAnswers }}\nproductcost: {{ $('On form submission').first().json['Device price'] }}\nrefurbishedprice: {{ $('Code').first().json.Refurbishedprice }}\nusedprice: {{ $('AI Agent').first().json.output }}",
+        "text": "=partscost:{{ $json.combinedAnswers }}\nproductcost:{{ $('Webhook').item.json.body.device_Price }}\nrefurbishedprice: {{ $('Code').first().json.Refurbishedprice }}\nusedprice: {{ $('AI Agent').first().json.output }}",
         "options": {
           "systemMessage": "Extract the following values from the text:\n\n- Product cost\n- Part cost\n- Refurbished price\n- Used price\n\nReturn only a JSON object in the following format:\n{\n  \"product_cost\": \"...\",\n  \"part_cost\": \"...\",\n  \"refurbished_price\": \"...\",\n  \"used_price\": \"...\"\n}\nYou can also include a sample like:\n\ntxt\nCopy\nEdit\nExample Output:\n{\n  \"product_cost\": \"100$\",\n  \"part_cost\": \"200$\",\n  \"refurbished_price\": \"300$\",\n  \"used_price\": \"200$\"\n}\nEnsure:\n- part_cost is the **sum** of all listed part prices.\n- Do **not** include any explanation or extra text — only return valid JSON.\n- All prices should include the \"$\" symbol."
         }
@@ -275,10 +275,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        336,
-        -432
+        96,
+        288
       ],
-      "id": "a3bc06b1-9279-44b8-96c4-1d1dd9be82d1",
+      "id": "f049e2b8-bfcb-4bd6-a192-57c91cedb7d5",
       "name": "AI Agent2"
     },
     {
@@ -288,14 +288,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        496,
-        -240
+        240,
+        608
       ],
-      "id": "102f767c-5dcd-4c1e-8610-2aa0d40121d3",
+      "id": "284f80a8-7e71-498c-a66e-07a905efbdde",
       "name": "Google Gemini Chat Model2",
       "credentials": {
         "googlePalmApi": {
-          "id": "izqDXyX5Y5UOw2q6",
+          "id": "PBnWjwdaGsi46dua",
           "name": "Google Gemini(PaLM) Api account"
         }
       }
@@ -307,16 +307,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        704,
-        -448
+        464,
+        272
       ],
-      "id": "846118cd-09de-4427-b562-74bbffa4bae8",
+      "id": "bdb64c67-baeb-450b-9d89-7ad2ee4e41e5",
       "name": "Code4"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "http://192.168.1.7:3000/api/roiSummary",
+        "url": "https://roi-caculator-ymlr.vercel.app/api/roiSummary",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -343,35 +343,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        912,
-        -448
+        464,
+        752
       ],
-      "id": "6950aa29-d23e-4faa-a2e9-197f87885450",
+      "id": "1aeb60f8-b5c9-4ff9-a581-ccaced80a9af",
       "name": "HTTP Request3"
     },
-    {
-      "parameters": {
-        "sendTo": "RECIPIENT-EMAIL-ADDRESS",
-        "subject": "ROI summary",
-        "message": "={{ $json.summary }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1136,
-        -448
-      ],
-      "id": "6ccb1f36-866d-463b-b5b9-c992ce33ae2e",
-      "name": "Send a message",
-      "webhookId": "9e345f7d-9bf9-454a-91bd-b45db2386db6",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "EILzXOInzPxhI0En",
-          "name": "Gmail account"
-        }
-      }
-    },
+    
     {
       "parameters": {
         "jsCode": "const markdown =  $input.first().json.summary\n\nconst { marked } = require(\"marked\"); // built-in in n8n\n\nreturn [\n  {\n    json: {\n      html: marked.parse(markdown)\n    }\n  }\n];\n"
@@ -379,10 +357,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        688,
-        -848
+        48,
+        -224
       ],
-      "id": "e2791428-c45a-4923-b371-164ce2462d8f",
+      "id": "3ea3d2c5-f0b0-4b48-a273-ce757ba7effb",
       "name": "Code5"
     },
     {
@@ -394,36 +372,80 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR-BEARER-TOKEN"
+              "value": "YOUR TAVILY API KEY"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n    \"query\": \"{{ $('On form submission').item.json['Device Model'] }} with {{ $('On form submission').item.json.Defects }} price in USD\",\n  \"auto_parameters\": false,\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 1,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": true,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_favicon\": false,\n  \"include_domains\": [\"bankmycell.com\"],\n  \"exclude_domains\": [],\n  \"country\": null\n}",
+        "jsonBody": "={\n    \"query\": \"{{ $('Webhook').item.json.body.Device_Model }} with {{ $('Webhook').item.json.body.Defects }} price in USD\",\n  \"auto_parameters\": false,\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 1,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": true,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_favicon\": false,\n  \"include_domains\": [\"bankmycell.com\"],\n  \"exclude_domains\": [],\n  \"country\": null\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1504,
-        -768
+        -2272,
+        80
       ],
-      "id": "1733817b-6838-4bfb-beac-11a50cd7fb2d",
+      "id": "89489162-007a-4545-b1e5-4ed6b796b0fc",
       "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1ffcb5ca-9ef2-4d2b-962e-2a0d1b5da4f7",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -3120,
+        80
+      ],
+      "id": "6f1022e4-2c75-4a05-86df-581fdc941cb4",
+      "name": "Webhook",
+      "webhookId": "WEBHOOK ID HERE" 
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=summary:{{ $json.summary }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        672,
+        752
+      ],
+      "id": "a0278ce3-5bfa-46a3-8ca2-94ee189eb06f",
+      "name": "Respond to Webhook"
     }
   ],
   "pinData": {},
   "connections": {
     "On form submission": {
       "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "HTTP Request": {
@@ -614,7 +636,7 @@
       "main": [
         [
           {
-            "node": "Send a message",
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -631,17 +653,28 @@
           }
         ]
       ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "55323dbb-ff77-4d9b-b417-bf550dfe8a6a",
+  "versionId": "913e0130-c02a-4393-ad03-eb9d98e43990",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "9ec4e12ebac723024754d7466390c588072434983bb59ee206a6ffe821ba7195"
+    "instanceId": "ac2e958b8cc5335c3efbb7c7f1182538a4bbd62fc1320af4d3d7c0864f1e7d5a"
   },
-  "id": "NwplgDJlsH7wf58f",
+  "id": "STXUL5Bv61uXxpmo",
   "tags": []
 }
