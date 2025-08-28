@@ -1,6 +1,5 @@
 import  { NextAuthOptions } from "next-auth";
 import bcrypt from "bcryptjs";
-import GoogleProvider from "next-auth/providers/google";
 import { usermodel } from "@/models/user.model";
 import CredentialsProvider  from "next-auth/providers/credentials";
 
@@ -13,10 +12,7 @@ export const authOptions: NextAuthOptions = {
     // maxAge: 60 * 60,
   },
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOGLE_CLIENT_SECRET || "",
-    }),
+   
     CredentialsProvider({
       id: 'credentials',
       name: 'Credentials',
