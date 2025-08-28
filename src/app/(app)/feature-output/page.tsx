@@ -15,7 +15,7 @@ export default function ResultsPage() {
           setHtmlContent(decodeURIComponent(html));
         }
         // else{
-        //   router.replace(`/feature`)
+        //   router.replace(`/feature/${problem}`)
         // }
       }
     } catch (error) {
@@ -48,19 +48,11 @@ export default function ResultsPage() {
   }
   
   return (
-    <div className="flex justify-center  items-center min-h-screen  bg-white text-white">
+    <div className="flex justify-center  items-center min-h-screen  bg-white ">
       <div>
-        {/* <h1 className="text-3xl font-bold text-center text-white">Your Results</h1> */}
-        <div 
-          className="prose prose-invert prose-lg max-w-none
-                   prose-h1:text-3xl prose-h1:font-bold prose-h1:text-white
-                   prose-h2:text-2xl prose-h2:text-zinc-300
-                   prose-p:text-zinc-400 prose-strong:text-white
-                   prose-table:table-auto prose-table:border
-                   prose-th:text-left prose-th:text-zinc-200
-                   prose-td:text-zinc-300
-                   prose-ul:list-disc prose-li:text-zinc-300"
-          dangerouslySetInnerHTML={{ __html: htmlContent }} 
+          <iframe
+          srcDoc={htmlContent}
+          className="sm:w-[100vw]  w-full h-[90vh] border-none rounded-lg"
         />
       </div>
     </div>
